@@ -1,7 +1,7 @@
 FROM alpine:3.12
 
 RUN apk update && \
-    apk add bash wget && \
+    apk add wget && \
     cd /root && \
     wget https://github.com/yinghua8wu/tcpudp/raw/master/fcn_x64_musl && \
     wget https://github.com/yinghua8wu/tcpudp/raw/master/gost-linux-amd64 && \
