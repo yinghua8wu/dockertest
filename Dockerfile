@@ -11,4 +11,4 @@ RUN apk update && \
     mv gost-linux-amd64 gost && \
     chmod +x fcn gost entry.sh
 
-CMD ["/root/entry.sh"]
+ENTRYPOINT ["/root/entry.sh"]
