@@ -12,4 +12,4 @@ RUN apk update && \
 	
 COPY entry.sh /entry.sh
 
-ENTRYPOINT ["/entry.sh"]
+CMD ["/entry.sh"]
