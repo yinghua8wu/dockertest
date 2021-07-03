@@ -1,14 +1,15 @@
-FROM alpine:3.12
+FROM golang:alpine AS builder
+RUN apk update && apk add --no-cache git bash curl
+WORKDIR /go/src/v2ray.com/core
+RUN git clone --progress https://github.com/v2fly/v2ray-core.git . && \
+    bash ./release/user-package.sh nosource noconf codename=$(git describe --tags) buildname=docker-fly abpathtgz=/tmp/v2ray.tgz
 
-RUN apk update && \
-    apk add wget && \
-    cd /root && \
-    wget https://github.com/yinghua8wu/tcpudp/raw/master/fcn_x64_musl && \
-    wget https://github.com/yinghua8wu/tcpudp/raw/master/gost-linux-amd64 && \
-    wget https://raw.githubusercontent.com/yinghua8wu/tcpudp/master/fcn-o.conf && \
-    wget https://raw.githubusercontent.com/yinghua8wu/dockertest/master/entry.sh && \
-    mv fcn_x64_musl fcn && \
-    mv gost-linux-amd64 gost && \
-    chmod +x fcn gost entry.sh
-
-ENTRYPOINT ["/root/entry.sh"]
+FROM alpine
+ENV CONFIG=https://raw.githubusercontent.com/yinghua8wu/dockertest/kinto/config.json
+COPY --from=builder /tmp/v2ray.tgz /tmp
+RUN apk update && apk add --no-cache tor ca-certificates && \
+    tar xvfz /tmp/v2ray.tgz -C /usr/bin && \
+    rm -rf /tmp/v2ray.tgz
+    
+CMD nohup tor & \
+    v2ray -config $CONFIG

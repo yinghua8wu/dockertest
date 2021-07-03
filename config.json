@@ -1,0 +1,66 @@
+{
+    "inbounds": [
+        {
+            "port": 3000,
+            "protocol": "vmess",
+            "settings": {
+                "clients": [
+                    {
+                        "id": "16a9aaa7-d6d8-468d-bad6-1977015f79ce"
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "ws"
+            }
+        }
+    ],
+
+    "outbounds": [
+        {
+            "protocol": "freedom"
+        },
+        {
+            "protocol": "blackhole",
+            "tag": "blocked"
+        },
+        {
+            "protocol": "socks",
+            "tag": "sockstor",
+            "settings": {
+                "servers": [
+                    {
+                        "address": "127.0.0.1",
+                        "port": 9050
+                    }
+                ]
+            }
+        }
+    ],
+
+   "dns": {
+       "servers": [
+           "https+local://dns.google/dns-query",
+           "https+local://cloudflare-dns.com/dns-query"
+           ]
+     },
+
+    "routing": {
+        "rules": [
+            {
+                "type": "field",
+                "outboundTag": "sockstor",
+                "domain": [
+                    "geosite:tor"
+                ]
+            },
+            {
+                "type": "field",
+                "outboundTag": "blocked",
+                "domain": [
+                    "geosite:category-ads-all"
+                ]
+            }
+        ]
+    }
+}
